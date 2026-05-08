@@ -113,10 +113,11 @@ Os mocks incluem 1 usuário e 3 hábitos. Também é possível adicionar e exclu
 ## 📱 Telas e navegação
 
 - **Login** – permite ao usuário informar e‑mail e senha para autenticar‑se. Valida campos vazios, exibe erro em caso de credenciais inválidas e mostra feedback de carregamento durante a requisição. Após sucesso, redireciona para a tela Home.
-- **Home (Início)** – tela inicial pós‑login. Possui dois botões: “Meus hábitos” abre a lista de hábitos do usuário; “Sair” efetua logout, limpando o token e retornando à tela de login. Os parâmetros de navegação levam o `userId` armazenado após o login.
+- **Home (Início)** – tela inicial pós‑login. Possui botões para acessar “Meus hábitos”, abrir a tela de sugestão de hábitos e sair da aplicação, limpando o token e retornando à tela de login. Os parâmetros de navegação levam o `userId` armazenado após o login.
 - **Hábitos** – lista os hábitos cadastrados para o usuário utilizando `FlatList`. Possui um formulário para adicionar novos hábitos com validação simples (nome e meta são obrigatórios). Também permite excluir hábitos existentes. Feedbacks de erro e loading são apresentados via texto e `ActivityIndicator`.
+- **Sugestão de hábitos** – exibe uma sugestão de atividade ou hábito de bem-estar. A tela tenta utilizar o endpoint de sugestões do backend quando configurado e, no modo demonstração, recorre à API pública Bored para manter a funcionalidade disponível sem subir a API Spring Boot.
 
-As três telas são conectadas com **React Navigation** utilizando `createStackNavigator`. O tipo `RootStackParamList` garante que os parâmetros de navegação sejam validados em tempo de compilação.
+As telas são conectadas com **React Navigation** utilizando `createStackNavigator`. O tipo `RootStackParamList` garante que os parâmetros de navegação sejam validados em tempo de compilação.
 
 ## 🧠 Gerenciamento de estado
 
@@ -137,11 +138,12 @@ O **AsyncStorage** é utilizado para armazenar o token JWT retornado no login. I
 
 ## 📸 Demonstração
 
-Devido às limitações do ambiente atual, não foi possível capturar screenshots reais da aplicação. Ao executar o projeto no seu emulador ou dispositivo, você verá:
 
 - Uma tela de login com inputs para email e senha, botão de **Entrar** e feedback de erros.
-- Uma tela inicial com saudação e botões de navegação para a lista de hábitos e logout.
+- Uma tela inicial com saudação e botões de navegação para a lista de hábitos, sugestões e logout.
 - Uma tela de lista de hábitos com formulário para adicionar novos hábitos, listagem de hábitos existentes e opção de excluir cada hábito.
+- Uma tela de sugestão de hábitos com imagem ilustrativa, texto de sugestão, botão para buscar nova sugestão e opção de voltar para a tela anterior.
+
 
 ## ✅ Conclusão
 
