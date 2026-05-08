@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "SOA CheckIn Mobile",
+    "slug": "soa-checkin-mobile",
+    "version": "1.0.0",
+    "sdkVersion": "50.0.0",
+    "platforms": ["ios", "android"],
+    "orientation": "portrait",
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {},
+    "web": {}
+  }
+}
