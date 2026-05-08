@@ -1,4 +1,4 @@
-# SOA CheckIn Mobile
+# CheckIn App - SOA & Mobile
 
 Aplicativo móvel desenvolvido como parte da disciplina de **Mobile Development and IoT – Sprint 3** para complementar a API de Check‑in da disciplina de SOA. O objetivo é oferecer uma interface intuitiva em React Native que permita ao usuário autenticar‑se, visualizar e gerenciar seus hábitos de saúde.
 
