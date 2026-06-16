@@ -7,13 +7,16 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "sprint4:server": "node scripts/sprint4-realtime-server.js"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.21.0",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/stack": "^6.4.1",
     "expo": "~50.0.0",
+    "expo-location": "~16.5.5",
+    "expo-secure-store": "~12.8.1",
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -21,7 +24,9 @@
     "react-native-gesture-handler": "~2.14.0",
     "react-native-reanimated": "~3.6.2",
     "react-native-safe-area-context": "4.8.2",
-    "react-native-screens": "~3.29.0"
+    "react-native-screens": "~3.29.0",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
     "@types/react": "~18.2.45",

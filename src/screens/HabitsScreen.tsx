@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,9 @@ import {
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/AppNavigator';
-import { Habito } from '../types';
+import { Habito, HabitSyncEvent } from '../types';
 import { getHabitos, createHabito, deleteHabito } from '../services/api';
+import { connectRealtime, RealtimeClient } from '../services/realtime';
 import HabitoItem from '../components/HabitoItem';
 import Loading from '../components/Loading';
 
@@ -36,11 +37,55 @@ export default function HabitsScreen({ route }: Props): JSX.Element {
   const [meta, setMeta] = useState<string>('');
   const [descricao, setDescricao] = useState<string>('');
   const [submitting, setSubmitting] = useState<boolean>(false);
+  const [realtimeConnected, setRealtimeConnected] = useState<boolean>(false);
+  const realtimeClientRef = useRef<RealtimeClient | null>(null);
 
   // Busca os hábitos ao montar a tela.
   useEffect(() => {
     loadHabitos();
   }, []);
+
+  useEffect(() => {
+    const client = connectRealtime({
+      userId,
+      onStatusChange: setRealtimeConnected,
+      onHabitSync: handleHabitSync,
+    });
+
+    realtimeClientRef.current = client;
+
+    return () => {
+      client.disconnect();
+      realtimeClientRef.current = null;
+    };
+  }, [userId]);
+
+  function handleHabitSync(event: HabitSyncEvent): void {
+    if (event.userId !== userId) {
+      return;
+    }
+
+    if (event.action === 'created' && event.habit) {
+      const incomingHabit = event.habit;
+
+      setHabitos((prev) => {
+        const habitExists = prev.some((habito) => habito.id === incomingHabit.id);
+
+        if (habitExists) {
+          return prev.map((habito) =>
+            habito.id === incomingHabit.id ? incomingHabit : habito
+          );
+        }
+
+        return [...prev, incomingHabit];
+      });
+      return;
+    }
+
+    if (event.action === 'deleted' && event.habitId) {
+      setHabitos((prev) => prev.filter((habito) => habito.id !== event.habitId));
+    }
+  }
 
   async function loadHabitos(): Promise<void> {
     setLoading(true);
@@ -66,6 +111,7 @@ export default function HabitsScreen({ route }: Props): JSX.Element {
     try {
       const newHabit = await createHabito(userId, { nome, meta, descricao });
       setHabitos((prev) => [...prev, newHabit]);
+      realtimeClientRef.current?.emitHabitCreated(newHabit);
       // Limpa os campos do formulário.
       setNome('');
       setMeta('');
@@ -82,6 +128,7 @@ export default function HabitsScreen({ route }: Props): JSX.Element {
     try {
       await deleteHabito(id);
       setHabitos((prev) => prev.filter((h) => h.id !== id));
+      realtimeClientRef.current?.emitHabitDeleted(id);
     } catch (err) {
       // Opcionalmente, trate erros de exclusão de forma silenciosa ou exiba feedback.
     }
@@ -125,6 +172,14 @@ export default function HabitsScreen({ route }: Props): JSX.Element {
       </View>
       <View style={styles.listContainer}>
         <Text style={styles.sectionTitle}>Meus hábitos</Text>
+        <Text
+          style={[
+            styles.realtimeStatus,
+            realtimeConnected ? styles.realtimeOnline : styles.realtimeOffline,
+          ]}
+        >
+          Tempo real: {realtimeConnected ? 'conectado' : 'offline'}
+        </Text>
         {loading ? (
           <Loading />
         ) : (
@@ -202,6 +257,17 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 8,
     color: '#222',
+  },
+  realtimeStatus: {
+    marginBottom: 8,
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  realtimeOnline: {
+    color: '#34A853',
+  },
+  realtimeOffline: {
+    color: '#777',
   },
   emptyText: {
     textAlign: 'center',

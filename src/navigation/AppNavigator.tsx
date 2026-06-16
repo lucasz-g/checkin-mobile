@@ -5,6 +5,7 @@ import LoginScreen from '../screens/LoginScreen';
 import HomeScreen from '../screens/HomeScreen';
 import HabitsScreen from '../screens/HabitsScreen';
 import SuggestionScreen from '../screens/SuggestionScreen';
+import MonitoringScreen from '../screens/MonitoringScreen';
 
 // Define a lista de parâmetros de cada tela da pilha. Ao especificar
 // os parâmetros explicitamente, erros de navegação são capturados em
@@ -15,6 +16,7 @@ export type RootStackParamList = {
   Home: { userId: number } | undefined;
   Habits: { userId: number };
   Suggestion: undefined;
+  Monitoring: { userId: number };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -47,6 +49,11 @@ export default function AppNavigator(): JSX.Element {
           name="Suggestion"
           component={SuggestionScreen}
           options={{ title: 'Sugestão' }}
+        />
+        <Stack.Screen
+          name="Monitoring"
+          component={MonitoringScreen}
+          options={{ title: 'Monitoramento' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

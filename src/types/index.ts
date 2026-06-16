@@ -39,3 +39,44 @@ export interface AuthResponse {
 export interface SugestaoResponse {
   sugestao: string;
 }
+
+export type IotReadingStatus = 'ok' | 'warning' | 'critical';
+
+export interface IotReading {
+  deviceId: string;
+  hydrationPercent: number;
+  temperatureC: number;
+  movementCount: number;
+  status: IotReadingStatus;
+  timestamp: string;
+  source: string;
+}
+
+export interface NativeLocation {
+  latitude: number;
+  longitude: number;
+  accuracy: number | null;
+  timestamp: string;
+}
+
+export interface HabitSyncEvent {
+  action: 'created' | 'deleted';
+  userId: number;
+  habit?: Habito;
+  habitId?: number;
+  timestamp: string;
+}
+
+export interface RealtimeEvent {
+  id: string;
+  type:
+    | 'connect'
+    | 'disconnect'
+    | 'connect_error'
+    | 'notification:new'
+    | 'iot:reading'
+    | 'habit:sync'
+    | 'location:shared';
+  message: string;
+  timestamp: string;
+}

@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { Habito, Usuario } from '../types';
 
 /**
@@ -7,11 +8,18 @@ import { Habito, Usuario } from '../types';
  * roles, chaves de armazenamento e outros identificadores repetidos.
  */
 
-// URL base da API backend. Atualize este valor para apontar para o
-// servidor Spring Boot. Durante o desenvolvimento com Expo em um
-// simulador, pode ser necessário usar o IP da máquina na rede local
-// em vez de localhost. Exemplo: http://192.168.0.10:8080/api
-export const API_BASE_URL = 'http://localhost:8080/api';
+// URL base da API backend. Em Android Emulator, 10.0.2.2 aponta para
+// a máquina host. Em celular físico, troque pelo IP da máquina na rede.
+export const LOCAL_DEV_HOST = Platform.OS === 'android' ? '10.0.2.2' : 'localhost';
+export const API_BASE_URL = `http://${LOCAL_DEV_HOST}:8080/api`;
+
+// Servidor Socket.IO usado na Sprint 4 para eventos em tempo real.
+// Em celular físico, troque localhost pelo IP da máquina na mesma rede.
+export const REALTIME_SERVER_URL = `http://${LOCAL_DEV_HOST}:3001`;
+
+// Endpoint HTTP do simulador IoT. O script local em scripts/
+// disponibiliza este recurso e também publica leituras via Socket.IO.
+export const IOT_SENSOR_URL = `${REALTIME_SERVER_URL}/iot/latest`;
 
 // API externa de atividades recreativas. Ela é usada na tela de
 // sugestão como fallback quando a API Spring Boot não está disponível.

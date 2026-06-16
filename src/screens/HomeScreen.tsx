@@ -48,6 +48,12 @@ export default function HomeScreen({ navigation, route }: Props): JSX.Element {
       >
         <Text style={styles.buttonText}>Sugestão de bem-estar</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.button, styles.monitoringButton]}
+        onPress={() => navigation.navigate('Monitoring', { userId })}
+      >
+        <Text style={styles.buttonText}>Monitoramento Sprint 4</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
         <Text style={styles.buttonText}>Sair</Text>
       </TouchableOpacity>
@@ -88,6 +94,9 @@ const styles = StyleSheet.create({
   },
   suggestionButton: {
     backgroundColor: '#34A853',
+  },
+  monitoringButton: {
+    backgroundColor: '#5856D6',
   },
   buttonText: {
     color: 'white',

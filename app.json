@@ -4,13 +4,35 @@
     "slug": "soa-checkin-mobile",
     "version": "1.0.0",
     "sdkVersion": "50.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "orientation": "portrait",
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Permitir que o CheckIn use sua localização para registrar o contexto do monitoramento."
+        }
+      ],
+      "expo-secure-store"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "O CheckIn usa sua localização apenas quando você envia o contexto do monitoramento."
+      }
     },
-    "android": {},
+    "android": {
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
+    },
     "web": {}
   }
 }

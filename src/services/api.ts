@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import {
   API_BORED_URL,
   API_BASE_URL,
@@ -20,6 +21,14 @@ import { Habito, AuthResponse, SugestaoResponse } from '../types';
 
 const MOCK_TOKEN_PREFIX = 'mock-token';
 let mockHabitos = MOCK_HABITOS.map((habito) => ({ ...habito }));
+
+async function getStoredToken(): Promise<string | null> {
+  return SecureStore.getItemAsync(STORAGE_KEYS.TOKEN);
+}
+
+async function storeToken(token: string): Promise<void> {
+  await SecureStore.setItemAsync(STORAGE_KEYS.TOKEN, token);
+}
 
 function isMockToken(token: string | null): boolean {
   return Boolean(token?.startsWith(MOCK_TOKEN_PREFIX));
@@ -45,7 +54,7 @@ async function loginWithMock(email: string, senha: string): Promise<string> {
   }
 
   const token = `${MOCK_TOKEN_PREFIX}-${user.id}`;
-  await AsyncStorage.setItem(STORAGE_KEYS.TOKEN, token);
+  await storeToken(token);
   await AsyncStorage.setItem(STORAGE_KEYS.USER_ID, String(user.id));
   return token;
 }
@@ -141,8 +150,8 @@ export async function login(email: string, senha: string): Promise<string> {
     }
 
     const data = (await response.json()) as AuthResponse;
-    // Persiste o token para chamadas posteriores à API.
-    await AsyncStorage.setItem(STORAGE_KEYS.TOKEN, data.token);
+    // Persiste o token em armazenamento seguro para chamadas posteriores à API.
+    await storeToken(data.token);
 
     const userId = data.userId ?? data.usuarioId ?? 1;
     await AsyncStorage.setItem(STORAGE_KEYS.USER_ID, String(userId));
@@ -167,7 +176,7 @@ export async function login(email: string, senha: string): Promise<string> {
  * @throws Error se o usuário não estiver autenticado ou a requisição falhar
  */
 export async function getHabitos(userId: number): Promise<Habito[]> {
-  const token = await AsyncStorage.getItem(STORAGE_KEYS.TOKEN);
+  const token = await getStoredToken();
   if (!token) {
     throw new Error('Usuário não autenticado');
   }
@@ -210,7 +219,7 @@ export async function createHabito(
   userId: number,
   habito: Omit<Habito, 'id' | 'dataCriacao' | 'usuarioId'>
 ): Promise<Habito> {
-  const token = await AsyncStorage.getItem(STORAGE_KEYS.TOKEN);
+  const token = await getStoredToken();
   if (!token) {
     throw new Error('Usuário não autenticado');
   }
@@ -249,7 +258,7 @@ export async function createHabito(
  * @param habitoId - id do hábito a ser excluído
  */
 export async function deleteHabito(habitoId: number): Promise<void> {
-  const token = await AsyncStorage.getItem(STORAGE_KEYS.TOKEN);
+  const token = await getStoredToken();
   if (!token) {
     throw new Error('Usuário não autenticado');
   }
@@ -286,7 +295,7 @@ export async function deleteHabito(habitoId: number): Promise<void> {
  * @returns Texto da sugestão retornada pela API disponível
  */
 export async function getSugestao(): Promise<string> {
-  const token = await AsyncStorage.getItem(STORAGE_KEYS.TOKEN);
+  const token = await getStoredToken();
   if (!token) {
     throw new Error('Usuário não autenticado');
   }
@@ -314,6 +323,6 @@ export async function getSugestao(): Promise<string> {
  * próximos acessos.
  */
 export async function logout(): Promise<void> {
-  await AsyncStorage.removeItem(STORAGE_KEYS.TOKEN);
+  await SecureStore.deleteItemAsync(STORAGE_KEYS.TOKEN);
   await AsyncStorage.removeItem(STORAGE_KEYS.USER_ID);
 }
